@@ -12,16 +12,13 @@ using namespace std;
 ////////////////////////////////////////////////////////////////////
 WegPunkt *g_Route = NULL;
 bool g_UBG_Flag = false;
-bool g_ERROR_FLAG = false;
 eName g_Roboter_Name = NOT_INIT;
 int g_Step_cnt = 0;
-TimerThree timer_Motor;
 double g_StreckeProStep = 0;
 double g_DrehwinkelProStep = 0;
 SoftwareSerial *g_btSerial = NULL;
 
 ////////////////////////////////////////////////////////////////////
-
 // Funktion zum berechenen der Faktoren für die Calc_step und Calc_deg Funktionen
 void Calc_factors_for_motordrive()
 {
@@ -39,12 +36,10 @@ void Calc_factors_for_motordrive()
 	//  H     H     H     64
 }
 
+////////////////////////////////////////////////////////////////////
 // erstellt neue Liste, wenn noch keine vorhanden und sonst wird sie mit den übergebenen Werten 
 // erweitert (ptr->next bekommt wert zugewiesen)
-
-// strecke in mm
-// RelWinkel in Grad
-void add_list(int strecke, int RelWinkel) {
+void add_list(int strecke, int RelWinkel) {//strecke in mm | RelWinkel in Grad
 	WegPunkt *ptr;
 	if (g_Route == NULL)
 	{
@@ -67,7 +62,8 @@ void add_list(int strecke, int RelWinkel) {
 	}
 }
 
-/*Liste wird vom ersten Element bis zum letzten Element gelöscht*/
+////////////////////////////////////////////////////////////////////
+//Liste wird vom ersten Element bis zum letzten Element gelöscht
 void delete_list() {
 	WegPunkt *ptr, *ptrA;
 	//Überprüfung, ob nächste Adresse einem Speicher zugewiesen ist
@@ -91,16 +87,22 @@ void delete_list() {
 	g_Route = NULL;
 }
 
-
+////////////////////////////////////////////////////////////////////
+// empfängt Strecke und speichert sie in mit add_list() ab
+// TRUE, wenn erfolgreich, bei Fehler FALSE
 bool GetData()
 {
-	// empfängt Strecke und speichert sie in Strecke[] ab
-	// empfängt Übergabebit und setzt demnach UBG_Flag
-	// TRUE, wenn erfolgreich, bei Fehler FALSE
 	static int data[20][3];
 	static int i = 0;
 	static int j = 0;
 	String btData = "";
+
+	Serial.print("GetData: i=");
+	Serial.print(i);
+	Serial.print("  j=");
+	Serial.print(j);
+	Serial.print("  btData=");
+	Serial.println(btData);
 
 	// löscht alte Strecke
 	if (g_Route != NULL) {
@@ -120,11 +122,11 @@ bool GetData()
 		// Umrechnung und zur liste hinzu fügen
 		for (int n = 0; n < 20; n++)
 		{
-			add_list(data[n][0], data[n][1] - data[n][2]);	// Daten in Liste speichern
-			//Serial.print("Weg: ");
-			//Serial.print(data[n][0]);
-			//Serial.print("Winkel: ");
-			//Serial.println(data[n][1] - data[n][2] +100);
+			add_list(data[n][0], data[n][1] - data[n][2]);		// Daten in Liste speichern
+			Serial.print("Weg: ");
+			Serial.print(data[n][0]);
+			Serial.print("Winkel: ");
+			Serial.println(data[n][1] - data[n][2]);
 		}
 		i = 0;
 		j = 0;
@@ -136,67 +138,76 @@ bool GetData()
 #endif
 #ifdef SIMULATION
 	// bei simulation Quadrat mit 1000mm * 1000mm abfahren
-	add_list(255,-90);
-	add_list(255,-90);
-	add_list(255,-90);
-	add_list(255,-90);
-	add_list(255,-90);
-	add_list(255,-90);
+	add_list(255,0);
+	add_list(255,90);
+	add_list(255,90);
+	add_list(255,90);
+	add_list(255,90);
+	add_list(255,90);
 	// Simulation
 	delay(1000);
 	return true;
 #endif
 }
 
+////////////////////////////////////////////////////////////////////
+// Fährt übergebenen Wegpunkt an
+// true wenn ziel erreicht
+// false, wenn durch stopp-Bit angehalten
 bool Drive(double winkel, double strecke)
 {
-	// true wenn ziel erreicht
-	// false, wenn durch stopp-Bit angehalten
-	// Simulation
-	double step = calc_step(strecke);
-	double deg = calc_deg(abs(winkel));
-	
-	if(winkel > 0){					//Linksdrehung
+	double step = 0; // Speicher für die Anzahl der zu fahrenden steps
+
+	// Setzen der Direction-Pins und Berechnung der zu fahrenden Steps
+	if(winkel > 0)					//Linksdrehung
+	{
+		step = calc_deg(winkel);
 		digitalWrite(PIN_OUT_Motor_R_DIR, LOW);
 		digitalWrite(PIN_OUT_Motor_L_DIR, HIGH);
-		move_via_step(deg);
-		delay(100);				//Pause nach Drehung
-	}else if(winkel < 0){			//Rechtsdrehung
+	}
+	else if(winkel < 0)			//Rechtsdrehung
+	{
+		step = calc_deg(abs(winkel));
 		digitalWrite(PIN_OUT_Motor_R_DIR, HIGH);
 		digitalWrite(PIN_OUT_Motor_L_DIR, LOW);
-		move_via_step(deg);
-		delay(100);				//Pause nach Drehung
-	}								//Geradeausfahren
+	}
+	if (step != 0) // Falls Drehung nötig, diese Abfahren
+	{
+		delay(1000); // Kurz warten bevor weiter gefahren wird damit übergänge nicht zu hart
+		if (!move_via_step(step)) // Drehung ausführen, falls Fehler, dann diesen zurück geben und fahrt unterbrechen
+			return false;
+	}
+
+	step = calc_step(strecke); //Geradeausfahren
 	digitalWrite(PIN_OUT_Motor_R_DIR, HIGH);
 	digitalWrite(PIN_OUT_Motor_L_DIR, HIGH);
-	move_via_step(step);
-	delay(100);				//Pause nach Drehung
-	//Auswertung des übergabebits
-	if (Main_State == Main_Idle) {
-		return false;
-	}
-	else {
-		return true;
-	}
+	
+	delay(1000); // Kurz warten bevor weiter gefahren wird damit übergänge nicht zu hart
+	return move_via_step(step);
 }
-
+////////////////////////////////////////////////////////////////////
+// Berechnet Anzahl der Steps welche für den übergebenen weg benötigt werden
 double calc_step(double weg){
-	//int Ks = 1;			//Fahrzeugabängiger Wert für das Schritte/Weg Verhältniss
-	//Serial.print("g_StreckeProStep: ");
-	//Serial.println(g_StreckeProStep);
+	Serial.print("g_StreckeProStep: ");
+	Serial.println(g_StreckeProStep);
 	return weg / g_StreckeProStep;
 }
-
+////////////////////////////////////////////////////////////////////
+// Berechnet Anzahl der Steps welche für den übergebenen winkel benötigt werden
 double calc_deg(double deg){
-	//int Kw = 1;			//Fahrzeugabängiger Wert für den Betrag der Drehung
-	//Serial.print("g_DrehwinkelProStep: ");
-	//Serial.println(g_DrehwinkelProStep);
+	Serial.print("g_DrehwinkelProStep: ");
+	Serial.println(g_DrehwinkelProStep);
 	return deg / g_DrehwinkelProStep;
 }
-
-void move_via_step(int step){	//Schritte auf den Motortreiber übergeben
-	////Serial.print("Step: ");
-	//Serial.println(step);
+////////////////////////////////////////////////////////////////////
+// Steuert Motortreiber mit der übergebenen Anzahl an Steps an
+// Kontrolliert während der Fahrt, ob Stop-Bit empfangen wird, falls ja stoppt die Ansteuerung des Motortreibers
+// True wenn erfolgreich, false wenn durch stopp-bis angehalten
+bool move_via_step(int step)
+{	
+	Serial.print("Step: ");
+	Serial.println(step);
+	TimerThree timer_Motor;
 	// Timer für die steps initialisieren
 	timer_Motor.initialize(5000); // 5000
 	timer_Motor.pwm(PIN_OUT_Motoren_STEP, 512);
@@ -206,26 +217,29 @@ void move_via_step(int step){	//Schritte auf den Motortreiber übergeben
 	// Warten bis Steps erreicht und kontinuierlich das Bluetooth modul abfragen
 	while (g_Step_cnt < step) {
 		delayMicroseconds(10);
-		////Serial.print("Step_CNT: ");
-		////Serial.println(g_Step_cnt);
-		if (g_btSerial->available())
+		//Serial.print("Step_CNT: ");
+		//Serial.println(g_Step_cnt);
+		if (g_btSerial->available()) //Bluetooth Stop-Bit
 		{
 			timer_Motor.pwm(PIN_OUT_Motoren_STEP, 0);
 			detachInterrupt(digitalPinToInterrupt(PIN_IN_Motoren_STEP));
-			g_Step_cnt = step + 1;
-			Main_State = Main_Idle;
-		}//Bluetooth
+			return false; // Alles Abbrechen, False zurück geben als Zeichen, dass Fahrt gescheitert
+		}
 	}
-	detachInterrupt(digitalPinToInterrupt(PIN_IN_Motoren_STEP));
-	// PWM signal auf 0 setzen
-	timer_Motor.pwm(PIN_OUT_Motoren_STEP, 0);
+	detachInterrupt(digitalPinToInterrupt(PIN_IN_Motoren_STEP)); // Interrupt für Step-Zähler deaktivieren
+	timer_Motor.pwm(PIN_OUT_Motoren_STEP, 0);// PWM signal auf 0 setzen
+	return true; // Fahrt erfolgreich
 }
 
-void Step_CNT() // zählt steps anhand von steigenden flanken des PWM signals
+////////////////////////////////////////////////////////////////////
+// zählt steps des Motortreibers anhand von steigenden Flanken des PWM signals
+void Step_CNT() 
 {
 	g_Step_cnt++;
 }
 
+////////////////////////////////////////////////////////////////////
+// Setzt LED Farbe je nach übergebenen Status
 void LED(eMainState State)
 {
 	// Hier wurde mit Common-Kathode LED gearbeitet (siehe http://propmakergen.blogspot.de/2016/03/rgb-led-tutorial.html)
@@ -238,7 +252,7 @@ void LED(eMainState State)
 	// neue Farbe einstellen
 	switch (State)
 	{
-		// Initialisierung -> Weiß
+	// Initialisierung -> Weiß
 	case Main_Init:
 	{
 		digitalWrite(PIN_OUT_LED_R, HIGH);
@@ -272,24 +286,7 @@ void LED(eMainState State)
 		digitalWrite(PIN_OUT_LED_B, HIGH);
 		break;
 	}
-	// Fehler -> 	Rot blinkend bei gesetzter ERROR-Flag; 
-	//				Rot-gelb blinkend bei anderen Fehlern(leerer Routen-Liste)
 	case Main_Error:
-	{
-		digitalWrite(PIN_OUT_LED_R, HIGH);
-		if (g_ERROR_FLAG){
-			delay(500);
-			digitalWrite(PIN_OUT_LED_R, LOW);
-			delay(500);
-		}
-		else{
-			delay(500);
-			digitalWrite(PIN_OUT_LED_G, HIGH);
-			delay(500);
-			digitalWrite(PIN_OUT_LED_G, LOW);
-		}
-		break;
-	}
 	default:
 		digitalWrite(PIN_OUT_LED_R, LOW);
 		break;

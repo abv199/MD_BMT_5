@@ -6,6 +6,7 @@
 #include "Firmware\MainData.h"
 #include <Servo.h>
 using namespace std;
+
 eMainState Main_State;
 
 void setup()
@@ -42,7 +43,7 @@ void setup()
 void loop() 
 {
 	LED(Main_State); // setzt status LED
-	////Serial.println(Main_State);
+	//Serial.println(Main_State);
 	switch (Main_State)
 	{
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +51,7 @@ void loop()
 		// LED Weiß
 		case Main_Init:
 		{
-			//Serial.println("MainInit");
+			Serial.println("MainInit");
 			// Servo auf 180 grad drehen
 			//myservo.write(180);
 
@@ -68,22 +69,13 @@ void loop()
 		// LED Gelb
 		case Main_Idle: 
 		{
-			////Serial.println("MainIdle");
-#ifndef SIMULATION
-
-
-
+			Serial.println("MainIdle");
+			
 			while (g_btSerial->available())
 			{
 				if (GetData()) // Daten erfolgreich empfangen
 					Main_State = Main_Drive;
 			}
-#endif 
-#ifdef SIMULATION
-			GetData();
-			Main_State = Main_Drive;
-#endif // Simulation
-			// !
 			break;
 		}
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +83,8 @@ void loop()
 		// LED Blau
 		case Main_Drive:
 		{
-			//Serial.println("MainDrive");
+			bool Drive_Success = false; // Merker, ob fahrt erfolgreich
+			Serial.println("MainDrive");
 			WegPunkt *ptr = g_Route;
 			if ((ptr == NULL) /*|| (g_ERROR_Flag) */) {
 				//Fehler, da keine route gespeichtert
@@ -99,18 +92,28 @@ void loop()
 				//Fehlerausgabe LED
 				Main_State = Main_Error;
 			}
-			else {			//Durchlaufen der gespeicherten Route
-				do {
-					////Serial.println(ptr->m_RelWinkel);
-					////Serial.println(ptr->m_strecke);
-					Drive(ptr->m_RelWinkel, ptr->m_strecke);
+			else //Durchlaufen der gespeicherten Route
+			{			
+				do 
+				{
+					//Serial.println(ptr->m_RelWinkel);
+					//Serial.println(ptr->m_strecke);
+					Drive_Success = Drive(ptr->m_RelWinkel, ptr->m_strecke);
+					if (!Drive_Success) // Fahrt abbrechen wenn Drive aufgrund von Stop-Befehl anhält
+						break;
 					ptr = ptr->next;
-				} while (ptr != NULL);
+				} while (ptr->next != NULL);
 			}
-			if (g_UBG_Flag) // Übergabe durchführen
-				Main_State = Main_UBG;
-			else
-				Main_State = Main_End;
+			if (Drive_Success) // Fahrt erfolgreich, also am Ziel angekommen
+			{
+				if (g_UBG_Flag) // Übergabe durchführen
+					Main_State = Main_UBG;
+				else
+					Main_State = Main_End;
+			}
+			else // Fahrt nicht erfolgreich, also durch Hauptrechner Stop-Befehl bekommen -> Neue Route empfangen
+				Main_State = Main_Idle;
+
 			break;
 		}
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -118,7 +121,7 @@ void loop()
 		// LED Grün
 		case Main_End:
 		{
-			//Serial.println("MainEnd");
+			Serial.println("MainEnd");
 
 			// 5 Sekunden Warten, danach wieder in Idle -> kann neue Strecke empfangen
 			delay(5000);
@@ -130,7 +133,7 @@ void loop()
 		// LED Lila
 		case Main_UBG:
 		{
-			//Serial.println("MainUBG");
+			Serial.println("MainUBG");
 			Servo myservo;
 			myservo.attach(PIN_OUT_SERVO);
 
@@ -154,7 +157,7 @@ void loop()
 		// LED Rot
 		case Main_Error:
 		{
-			//Serial.println("MainError");
+			Serial.println("MainError");
 
 			//5 Sekunden warten, danach wieder in Idle um neue Strecke zu empfangen
 			delay(5000);

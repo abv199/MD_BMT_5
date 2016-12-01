@@ -71,12 +71,10 @@ void output_list();
 // Globale Variablen und Funktionen
 /////////////////////////////////////////////////////////////////////
 extern WegPunkt *g_Route;	// Speichert Wegpunkte ab
-extern bool g_ERROR_Flag;	// vom Rechner gesetztes flag bsp. für annaehernde Kollision
 extern bool g_UBG_Flag;		// wird bei Übergabeszenario auf True gesetzt
 extern eName g_Roboter_Name;
 extern SoftwareSerial *g_btSerial;
 
-extern eMainState Main_State;
 extern int g_Step_cnt;
 extern double g_StreckeProStep;
 extern double g_DrehwinkelProStep;
@@ -85,7 +83,7 @@ extern double g_DrehwinkelProStep;
 bool GetData();
 bool Drive(double winkel, double strecke);
 void LED(eMainState State);
-void move_via_step(int step);
+bool move_via_step(int step);
 double calc_step(double weg);
 double calc_deg(double deg);
 void Step_CNT();
