@@ -12,7 +12,7 @@
 #define _VSARDUINO_H_
 #define __AVR_ATmega2560__
 #define F_CPU 16000000L
-#define ARDUINO 10607
+#define ARDUINO 10609
 #define ARDUINO_AVR_MEGA2560
 #define ARDUINO_ARCH_AVR
 #define __cplusplus 201103L
@@ -62,7 +62,7 @@ extern "C" void __cxa_pure_virtual() {;}
 #define portOutputRegister(P)
 #define portInputRegister(P)
 #define portModeRegister(P)
-#include <..\BMT5_MD\BMT5_MD.ino>
+#include <BMT5_MD.ino>
 #include <Firmware\MainData.cpp>
 #include <Firmware\MainData.h>
 #include <Firmware\SoftwareSerial.cpp>

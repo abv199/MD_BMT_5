@@ -70,12 +70,17 @@ void loop()
 		case Main_Idle: 
 		{
 			Serial.println("MainIdle");
-			
+#ifndef SIMULATION
 			while (g_btSerial->available())
 			{
 				if (GetData()) // Daten erfolgreich empfangen
 					Main_State = Main_Drive;
 			}
+#endif
+#ifdef SIMULATION
+			GetData();
+			Main_State = Main_Drive;
+#endif
 			break;
 		}
 		/////////////////////////////////////////////////////////////////////////////////////////
@@ -102,7 +107,7 @@ void loop()
 					if (!Drive_Success) // Fahrt abbrechen wenn Drive aufgrund von Stop-Befehl anhält
 						break;
 					ptr = ptr->next;
-				} while (ptr->next != NULL);
+				} while (ptr != NULL);
 			}
 			if (Drive_Success) // Fahrt erfolgreich, also am Ziel angekommen
 			{

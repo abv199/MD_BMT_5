@@ -1,5 +1,5 @@
 <VisualMicro>
-  <Program Name="BMT5_MD" Ext=".ino" Location="C:\Users\Studium\Downloads\BMT5_MD_Projekt-master\BMT5_MD">
+  <Program Name="BMT5_MD" Ext=".ino" Location="C:\Users\Studium\Documents\Studium\5. Semester\Mechatronisches Design\MD_BMT_5\BMT5_MD">
     <Compile IsDebugStart="1" CompilerErrors="0" ConfigurationName="Release" StopOnError="False" OptimiseLibs="True" OptimiseCore="True" ReCompileIfSourceIsNewer="1" BuildPath="C:\Users\Studium\AppData\Local\Temp\VMicroBuilds\BMT5_MD\mega_atmega2560" IncludeDebug="0" IncludesDebug="0" SketchName="BMT5_MD" IsCompiled="1" />
     <Debug DebugEnabled="0" EnableBreak="1" />
     <Platform Name="arduino16x" Package="arduino" Platform="avr" Architecture="avr">

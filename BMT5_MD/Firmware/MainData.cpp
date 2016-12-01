@@ -173,7 +173,7 @@ bool Drive(double winkel, double strecke)
 	}
 	if (step != 0) // Falls Drehung nötig, diese Abfahren
 	{
-		delay(1000); // Kurz warten bevor weiter gefahren wird damit übergänge nicht zu hart
+		delay(100); // Kurz warten bevor weiter gefahren wird damit übergänge nicht zu hart
 		if (!move_via_step(step)) // Drehung ausführen, falls Fehler, dann diesen zurück geben und fahrt unterbrechen
 			return false;
 	}
@@ -182,7 +182,7 @@ bool Drive(double winkel, double strecke)
 	digitalWrite(PIN_OUT_Motor_R_DIR, HIGH);
 	digitalWrite(PIN_OUT_Motor_L_DIR, HIGH);
 	
-	delay(1000); // Kurz warten bevor weiter gefahren wird damit übergänge nicht zu hart
+	delay(100); // Kurz warten bevor weiter gefahren wird damit übergänge nicht zu hart
 	return move_via_step(step);
 }
 ////////////////////////////////////////////////////////////////////
