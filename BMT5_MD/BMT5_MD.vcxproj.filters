@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Firmware">
+      <UniqueIdentifier>{f3588103-d365-4f21-b19d-ed2e506c4cfa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BMT5_MD.ino" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include=".\Firmware\MainData.h">
+      <Filter>Firmware</Filter>
+    </ClInclude>
+    <ClInclude Include=".\Firmware\Vector.h">
+      <Filter>Firmware</Filter>
+    </ClInclude>
+    <ClInclude Include=".\__vm\.BMT5_MD.vsarduino.h" />
+    <ClInclude Include="Firmware\TimerThree.h">
+      <Filter>Firmware</Filter>
+    </ClInclude>
+    <ClInclude Include="Firmware\SoftwareSerial.h">
+      <Filter>Firmware</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Firmware\MainData.cpp">
+      <Filter>Firmware</Filter>
+    </ClCompile>
+    <ClCompile Include="Firmware\TimerThree.cpp">
+      <Filter>Firmware</Filter>
+    </ClCompile>
+    <ClCompile Include="Firmware\SoftwareSerial.cpp">
+      <Filter>Firmware</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

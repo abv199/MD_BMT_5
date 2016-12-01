@@ -1,0 +1,34 @@
+﻿Der Buildvorgang wurde am 26.09.2016 23:07:12 gestartet.
+     1>Projekt "D:\OneDrive\HAW\_Fächer\BMT5-MD\BMT5_MD\BMT5_MD\BMT5_MD.vcxproj" auf Knoten "2", Rebuild Ziel(e).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I"C:\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino" /I"C:\Program Files (x86)\Arduino\hardware\arduino\avr\variants\mega" /I"E:\OneDrive\HAW\_Fächer\BMT5-MD\BMT5_MD\BMT5_MD" /I"C:\Program Files (x86)\Arduino\libraries\LiquidCrystal\src" /I"C:\Program Files (x86)\Arduino\libraries\LiquidCrystal\src\utility" /I"C:\Program Files (x86)\Arduino\libraries" /I"C:\Program Files (x86)\Arduino\hardware\arduino\avr\libraries" /I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Extensions\mo21rbtj.nnf\Micro Platforms\default\debuggers" /IC:\Users\Eike\Documents\Arduino\libraries /I"C:\Program Files (x86)\Arduino\hardware\tools\avr/avr/include/" /I"C:\Program Files (x86)\Arduino\hardware\tools\avr//avr/include/avr/" /I"C:\Program Files (x86)\Arduino\hardware\tools\avr/lib\gcc\avr\4.8.1\include" /ZI /nologo /W3 /WX- /Od /Oy- /D __AVR_ATmega2560__ /D _VMDEBUG=1 /D F_CPU=16000000L /D ARDUINO=10607 /D ARDUINO_AVR_MEGA2560 /D ARDUINO_ARCH_AVR /D __cplusplus=201103L /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"stdafx.h" /Fp"Debug\BMT5_MD.pch" /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /FI"E:\OneDrive\HAW\_Fächer\BMT5-MD\BMT5_MD\BMT5_MD\__vm\.BMT5_MD.vsarduino.h" /analyze- /errorReport:prompt .\Firmware\MainData.cpp .\Firmware\Thread.cpp .\FWEG\ModFWeg.cpp .\Komm\ModKomm.cpp .\PE\ModPE.cpp .\UBG\ModUBG.cpp Beispiel\Ampel.cpp Beispiel\U_Sensor.cpp
+         U_Sensor.cpp
+     1>c1xx : warning C4117: Makroname "__cplusplus" ist reserviert, "#define" wird ignoriert
+     1>d:\onedrive\haw\_fächer\bmt5-md\bmt5_md\bmt5_md\beispiel\u_sensor.cpp(49): fatal error C1010: Unerwartetes Dateiende während der Suche nach dem vorkompilierten Header. Haben Sie möglicherweise vergessen, im Quellcode "#include "stdafx.h"" einzufügen?
+         Ampel.cpp
+     1>c1xx : warning C4117: Makroname "__cplusplus" ist reserviert, "#define" wird ignoriert
+     1>d:\onedrive\haw\_fächer\bmt5-md\bmt5_md\bmt5_md\beispiel\ampel.cpp(161): fatal error C1010: Unerwartetes Dateiende während der Suche nach dem vorkompilierten Header. Haben Sie möglicherweise vergessen, im Quellcode "#include "stdafx.h"" einzufügen?
+         ModUBG.cpp
+     1>c1xx : warning C4117: Makroname "__cplusplus" ist reserviert, "#define" wird ignoriert
+     1>d:\onedrive\haw\_fächer\bmt5-md\bmt5_md\bmt5_md\ubg\modubg.cpp(2): fatal error C1010: Unerwartetes Dateiende während der Suche nach dem vorkompilierten Header. Haben Sie möglicherweise vergessen, im Quellcode "#include "stdafx.h"" einzufügen?
+         ModPE.cpp
+     1>c1xx : warning C4117: Makroname "__cplusplus" ist reserviert, "#define" wird ignoriert
+     1>d:\onedrive\haw\_fächer\bmt5-md\bmt5_md\bmt5_md\pe\modpe.cpp(2): fatal error C1010: Unerwartetes Dateiende während der Suche nach dem vorkompilierten Header. Haben Sie möglicherweise vergessen, im Quellcode "#include "stdafx.h"" einzufügen?
+         ModKomm.cpp
+     1>c1xx : warning C4117: Makroname "__cplusplus" ist reserviert, "#define" wird ignoriert
+     1>d:\onedrive\haw\_fächer\bmt5-md\bmt5_md\bmt5_md\komm\modkomm.cpp(2): fatal error C1010: Unerwartetes Dateiende während der Suche nach dem vorkompilierten Header. Haben Sie möglicherweise vergessen, im Quellcode "#include "stdafx.h"" einzufügen?
+         ModFWeg.cpp
+     1>c1xx : warning C4117: Makroname "__cplusplus" ist reserviert, "#define" wird ignoriert
+     1>d:\onedrive\haw\_fächer\bmt5-md\bmt5_md\bmt5_md\fweg\modfweg.cpp(2): fatal error C1010: Unerwartetes Dateiende während der Suche nach dem vorkompilierten Header. Haben Sie möglicherweise vergessen, im Quellcode "#include "stdafx.h"" einzufügen?
+         Thread.cpp
+     1>c1xx : warning C4117: Makroname "__cplusplus" ist reserviert, "#define" wird ignoriert
+     1>d:\onedrive\haw\_fächer\bmt5-md\bmt5_md\bmt5_md\firmware\thread.cpp(152): fatal error C1010: Unerwartetes Dateiende während der Suche nach dem vorkompilierten Header. Haben Sie möglicherweise vergessen, im Quellcode "#include "stdafx.h"" einzufügen?
+         MainData.cpp
+     1>c1xx : warning C4117: Makroname "__cplusplus" ist reserviert, "#define" wird ignoriert
+     1>d:\onedrive\haw\_fächer\bmt5-md\bmt5_md\bmt5_md\firmware\maindata.cpp(1): fatal error C1010: Unerwartetes Dateiende während der Suche nach dem vorkompilierten Header. Haben Sie möglicherweise vergessen, im Quellcode "#include "stdafx.h"" einzufügen?
+         Code wird generiert...
+     1>Die Erstellung des Projekts "D:\OneDrive\HAW\_Fächer\BMT5-MD\BMT5_MD\BMT5_MD\BMT5_MD.vcxproj" ist abgeschlossen, Rebuild Ziel(e) -- FEHLER.
+
+Fehler beim Buildvorgang.
+
+Verstrichene Zeit 00:00:03.08
